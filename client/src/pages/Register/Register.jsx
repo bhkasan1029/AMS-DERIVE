@@ -9,6 +9,23 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { uploadFile } from '../../services/storageService';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import {
+  User,
+  Building2,
+  FileText,
+  Code2,
+  Layers,
+  Mail,
+  Link,
+  Shield,
+  CheckCircle2,
+  Loader2,
+  AlertCircle,
+} from 'lucide-react';
 import './Register.css';
 
 const INITIAL_FORM = {
@@ -63,6 +80,19 @@ function validate(form) {
   }
 
   return errors;
+}
+
+function FieldIcon({ icon: Icon }) {
+  return (
+    <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500">
+      <Icon size={16} />
+    </div>
+  );
+}
+
+function FieldError({ message }) {
+  if (!message) return null;
+  return <p className="text-xs text-red-500 mt-1 ml-1">{message}</p>;
 }
 
 function Register() {
@@ -146,206 +176,214 @@ function Register() {
 
   if (success) {
     return (
-      <div className="register">
-        <div className="register__container">
-          <div className="register__success">
-            <h2>Registration Successful</h2>
-            <p>Your registration has been submitted successfully.</p>
-            <button
-              className="register__submit"
-              onClick={() => setSuccess(false)}
-            >
+      <div className="register min-h-screen flex items-center justify-center bg-black px-4 py-12 font-serif">
+        <Card className="w-full max-w-lg border-zinc-800 animate-in">
+          <CardContent className="flex flex-col items-center text-center py-12 px-8">
+            <CheckCircle2 size={48} className="text-emerald-400 mb-4" />
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent mb-2">
+              Registration Successful
+            </h2>
+            <p className="text-zinc-400 mb-8">
+              Your registration has been submitted successfully.
+            </p>
+            <Button size="lg" onClick={() => setSuccess(false)}>
               Register Another
-            </button>
-          </div>
-        </div>
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="register">
-      <div className="register__container">
-        <h1 className="register__title">Register</h1>
+    <div className="register min-h-screen flex items-center justify-center bg-black px-4 py-12 font-serif">
+      <Card className="w-full max-w-2xl border-zinc-800 animate-in">
+        <CardHeader className="text-center">
+          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-500 bg-clip-text text-transparent">
+            Register
+          </CardTitle>
+          <CardDescription>
+            Fill in the details below to register for the competition
+          </CardDescription>
+        </CardHeader>
 
-        {submitError && (
-          <p className="register__error-banner">{submitError}</p>
-        )}
-
-        <form className="register__form" onSubmit={handleSubmit} noValidate>
-          <div className="register__field">
-            <label htmlFor="fullName">Full Name</label>
-            <div className="register__input-wrap">
-              <svg className="register__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              <input
-                id="fullName"
-                name="fullName"
-                type="text"
-                placeholder="Your full name"
-                value={form.fullName}
-                onChange={handleChange}
-                className={errors.fullName ? 'input--error' : ''}
-              />
+        <CardContent>
+          {submitError && (
+            <div className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400 mb-6">
+              <AlertCircle size={16} className="shrink-0" />
+              {submitError}
             </div>
-            {errors.fullName && (
-              <span className="register__field-error">{errors.fullName}</span>
-            )}
-          </div>
+          )}
 
-          <div className="register__field">
-            <label htmlFor="institution">Institution Name</label>
-            <div className="register__input-wrap">
-              <svg className="register__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/></svg>
-              <input
-                id="institution"
-                name="institution"
-                type="text"
-                placeholder="Your institution"
-                value={form.institution}
-                onChange={handleChange}
-                className={errors.institution ? 'input--error' : ''}
-              />
+          <form onSubmit={handleSubmit} noValidate className="space-y-5">
+            {/* Full Name */}
+            <div className="space-y-2">
+              <Label htmlFor="fullName">Full Name</Label>
+              <div className="relative">
+                <FieldIcon icon={User} />
+                <Input
+                  id="fullName"
+                  name="fullName"
+                  type="text"
+                  placeholder="Your full name"
+                  value={form.fullName}
+                  onChange={handleChange}
+                  className={`pl-10 ${errors.fullName ? 'border-red-500 focus-visible:ring-red-500/40' : ''}`}
+                />
+              </div>
+              <FieldError message={errors.fullName} />
             </div>
-            {errors.institution && (
-              <span className="register__field-error">
-                {errors.institution}
-              </span>
-            )}
-          </div>
 
-          <div className="register__field">
-            <label htmlFor="idCard">ID Card (PDF)</label>
-            <div className="register__input-wrap">
-              <svg className="register__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              <input
-                id="idCard"
-                name="idCard"
-                type="file"
-                accept=".pdf"
-                onChange={handleChange}
-                className={errors.idCard ? 'input--error' : ''}
-              />
+            {/* Institution */}
+            <div className="space-y-2">
+              <Label htmlFor="institution">Institution Name</Label>
+              <div className="relative">
+                <FieldIcon icon={Building2} />
+                <Input
+                  id="institution"
+                  name="institution"
+                  type="text"
+                  placeholder="Your institution"
+                  value={form.institution}
+                  onChange={handleChange}
+                  className={`pl-10 ${errors.institution ? 'border-red-500 focus-visible:ring-red-500/40' : ''}`}
+                />
+              </div>
+              <FieldError message={errors.institution} />
             </div>
-            <span className="register__field-note">
-              To verify institution
-            </span>
-            {errors.idCard && (
-              <span className="register__field-error">{errors.idCard}</span>
-            )}
-          </div>
 
-          <div className="register__field">
-            <label htmlFor="codeforcesHandle">Codeforces Handle</label>
-            <div className="register__input-wrap">
-              <svg className="register__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-              <input
-                id="codeforcesHandle"
-                name="codeforcesHandle"
-                type="text"
-                placeholder="Your Codeforces handle"
-                value={form.codeforcesHandle}
-                onChange={handleChange}
-                className={errors.codeforcesHandle ? 'input--error' : ''}
-              />
+            {/* ID Card (PDF) */}
+            <div className="space-y-2">
+              <Label htmlFor="idCard">ID Card (PDF)</Label>
+              <div className="relative">
+                <FieldIcon icon={FileText} />
+                <input
+                  id="idCard"
+                  name="idCard"
+                  type="file"
+                  accept=".pdf"
+                  onChange={handleChange}
+                  className={`flex h-10 w-full rounded-lg border bg-zinc-900 pl-10 pr-3 py-2 text-sm text-zinc-400 file:border-0 file:bg-zinc-800 file:text-zinc-300 file:text-sm file:font-medium file:mr-3 file:px-3 file:py-0.5 file:rounded-md hover:file:bg-zinc-700 cursor-pointer transition-colors ${errors.idCard ? 'border-red-500' : 'border-zinc-700'}`}
+                />
+              </div>
+              <p className="text-xs text-zinc-500 ml-1 italic">To verify institution</p>
+              <FieldError message={errors.idCard} />
             </div>
-            {errors.codeforcesHandle && (
-              <span className="register__field-error">
-                {errors.codeforcesHandle}
-              </span>
-            )}
-          </div>
 
-          <div className="register__field">
-            <label htmlFor="codechefUsername">CodeChef Username</label>
-            <div className="register__input-wrap">
-              <svg className="register__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-              <input
-                id="codechefUsername"
-                name="codechefUsername"
-                type="text"
-                placeholder="Your CodeChef username"
-                value={form.codechefUsername}
-                onChange={handleChange}
-                className={errors.codechefUsername ? 'input--error' : ''}
-              />
+            {/* Codeforces + CodeChef — two-column on desktop */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {/* Codeforces Handle */}
+              <div className="space-y-2">
+                <Label htmlFor="codeforcesHandle">Codeforces Handle</Label>
+                <div className="relative">
+                  <FieldIcon icon={Code2} />
+                  <Input
+                    id="codeforcesHandle"
+                    name="codeforcesHandle"
+                    type="text"
+                    placeholder="Your handle"
+                    value={form.codeforcesHandle}
+                    onChange={handleChange}
+                    className={`pl-10 font-mono ${errors.codeforcesHandle ? 'border-red-500 focus-visible:ring-red-500/40' : ''}`}
+                  />
+                </div>
+                <FieldError message={errors.codeforcesHandle} />
+              </div>
+
+              {/* CodeChef Username */}
+              <div className="space-y-2">
+                <Label htmlFor="codechefUsername">CodeChef Username</Label>
+                <div className="relative">
+                  <FieldIcon icon={Layers} />
+                  <Input
+                    id="codechefUsername"
+                    name="codechefUsername"
+                    type="text"
+                    placeholder="Your username"
+                    value={form.codechefUsername}
+                    onChange={handleChange}
+                    className={`pl-10 font-mono ${errors.codechefUsername ? 'border-red-500 focus-visible:ring-red-500/40' : ''}`}
+                  />
+                </div>
+                <FieldError message={errors.codechefUsername} />
+              </div>
             </div>
-            {errors.codechefUsername && (
-              <span className="register__field-error">
-                {errors.codechefUsername}
-              </span>
-            )}
-          </div>
 
-          <div className="register__field">
-            <label htmlFor="email">Email ID</label>
-            <div className="register__input-wrap">
-              <svg className="register__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="you@example.com"
-                value={form.email}
-                onChange={handleChange}
-                className={errors.email ? 'input--error' : ''}
-              />
+            {/* Email */}
+            <div className="space-y-2">
+              <Label htmlFor="email">Email ID</Label>
+              <div className="relative">
+                <FieldIcon icon={Mail} />
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={form.email}
+                  onChange={handleChange}
+                  className={`pl-10 ${errors.email ? 'border-red-500 focus-visible:ring-red-500/40' : ''}`}
+                />
+              </div>
+              <FieldError message={errors.email} />
             </div>
-            {errors.email && (
-              <span className="register__field-error">{errors.email}</span>
-            )}
-          </div>
 
-          <div className="register__field">
-            <label htmlFor="linkedIn">LinkedIn Profile</label>
-            <div className="register__input-wrap">
-              <svg className="register__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-              <input
-                id="linkedIn"
-                name="linkedIn"
-                type="url"
-                value={form.linkedIn}
-                onChange={handleChange}
-                placeholder="https://linkedin.com/in/..."
-                className={errors.linkedIn ? 'input--error' : ''}
-              />
+            {/* LinkedIn */}
+            <div className="space-y-2">
+              <Label htmlFor="linkedIn">LinkedIn Profile</Label>
+              <div className="relative">
+                <FieldIcon icon={Link} />
+                <Input
+                  id="linkedIn"
+                  name="linkedIn"
+                  type="url"
+                  placeholder="https://linkedin.com/in/..."
+                  value={form.linkedIn}
+                  onChange={handleChange}
+                  className={`pl-10 ${errors.linkedIn ? 'border-red-500 focus-visible:ring-red-500/40' : ''}`}
+                />
+              </div>
+              <FieldError message={errors.linkedIn} />
             </div>
-            {errors.linkedIn && (
-              <span className="register__field-error">{errors.linkedIn}</span>
-            )}
-          </div>
 
-          <div className="register__field">
-            <label htmlFor="willingToShare">
-              Are you willing to share your information with other companies?
-            </label>
-            <div className="register__input-wrap">
-              <svg className="register__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <input
-                id="willingToShare"
-                name="willingToShare"
-                type="text"
-                value={form.willingToShare}
-                onChange={handleChange}
-                placeholder='Type "yes" or "no"'
-                className={errors.willingToShare ? 'input--error' : ''}
-              />
+            {/* Willing to Share */}
+            <div className="space-y-2">
+              <Label htmlFor="willingToShare">
+                Are you willing to share your information with other companies?
+              </Label>
+              <div className="relative">
+                <FieldIcon icon={Shield} />
+                <Input
+                  id="willingToShare"
+                  name="willingToShare"
+                  type="text"
+                  placeholder='Type "yes" or "no"'
+                  value={form.willingToShare}
+                  onChange={handleChange}
+                  className={`pl-10 ${errors.willingToShare ? 'border-red-500 focus-visible:ring-red-500/40' : ''}`}
+                />
+              </div>
+              <FieldError message={errors.willingToShare} />
             </div>
-            {errors.willingToShare && (
-              <span className="register__field-error">
-                {errors.willingToShare}
-              </span>
-            )}
-          </div>
 
-          <button
-            type="submit"
-            className="register__submit"
-            disabled={loading}
-          >
-            {loading ? 'Submitting...' : 'Register'}
-          </button>
-        </form>
-      </div>
+            {/* Submit */}
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full mt-2"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 size={18} className="mr-2 animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                'Register'
+              )}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

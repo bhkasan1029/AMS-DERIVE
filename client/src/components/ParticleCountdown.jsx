@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 const PARTICLE_COUNT = 1600;
 const PER_DIGIT = PARTICLE_COUNT / 8;
-const REPEL_RADIUS = 100;
+const REPEL_RADIUS = 55;
 const REPEL_STRENGTH = 6;
 const SPRING = 0.032;
 const DAMPING = 0.86;
