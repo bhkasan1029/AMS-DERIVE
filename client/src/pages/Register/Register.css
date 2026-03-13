@@ -1,63 +1,326 @@
+/* ── Google Font import ── */
+@import url('https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap');
+
+/* ── Dark theme on parent wrapper ── */
+.app:has(.register) {
+  background: #08080c;
+}
+
+.app:has(.register) .main-content {
+  padding-top: 80px;
+}
+
+/* ── Page wrapper with gradient background ── */
 .register {
-  max-width: 400px;
-  margin: var(--spacing-2xl) auto;
-  padding: 0 var(--spacing-lg);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 100vh;
+  padding: 3rem 1.5rem;
+  font-family: 'PT Serif', serif;
+  overflow: hidden;
 }
 
+/* Ambient gradient glow behind card */
+.register::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(26, 82, 168, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.register::after {
+  content: '';
+  position: absolute;
+  bottom: -15%;
+  right: -10%;
+  width: 55%;
+  height: 55%;
+  background: radial-gradient(circle, rgba(100, 40, 180, 0.18) 0%, transparent 70%);
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* ── Glass card ── */
 .register__container {
-  background-color: var(--color-surface);
-  padding: var(--spacing-xl);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 680px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 3rem 3rem;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 80px rgba(26, 82, 168, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  animation: cardIn 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(12px);
 }
 
+@keyframes cardIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Title ── */
 .register__title {
-  font-size: var(--font-size-2xl);
+  font-family: 'PT Serif', serif;
   font-weight: 700;
-  margin-bottom: var(--spacing-lg);
+  font-size: clamp(1.4rem, 3.5vw, 1.85rem);
+  letter-spacing: 0.02em;
+  background: linear-gradient(135deg, #7DD8F5, #4AAED4, #6C5CE7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  margin-bottom: 2.25rem;
 }
 
+/* ── Form ── */
 .register__form {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 1.15rem;
 }
 
+/* ── Field group ── */
 .register__field {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: 0.35rem;
 }
 
 .register__field label {
-  font-size: var(--font-size-sm);
-  font-weight: 500;
+  font-family: 'PT Serif', serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.55);
+  margin-left: 0.25rem;
 }
 
-.register__field input {
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-base);
+/* ── Input wrapper (icon + input) ── */
+.register__input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.register__field input:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: -1px;
-  border-color: var(--color-primary);
+.register__input-icon {
+  position: absolute;
+  left: 14px;
+  width: 16px;
+  height: 16px;
+  color: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+  transition: color 0.25s ease;
+  flex-shrink: 0;
 }
 
-.register__submit {
-  padding: var(--spacing-sm) var(--spacing-lg);
-  background-color: var(--color-primary);
+.register__input-wrap:focus-within .register__input-icon {
+  color: #4AAED4;
+}
+
+/* ── Text inputs ── */
+.register__field input[type='text'],
+.register__field input[type='email'],
+.register__field input[type='url'] {
+  width: 100%;
+  padding: 0.7rem 0.9rem 0.7rem 2.6rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+  font-family: 'PT Serif', serif;
+  font-size: 0.92rem;
   color: #ffffff;
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-base);
-  font-weight: 500;
-  margin-top: var(--spacing-sm);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
-.register__submit:hover {
-  background-color: var(--color-primary-hover);
+.register__field input[type='text']::placeholder,
+.register__field input[type='email']::placeholder,
+.register__field input[type='url']::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.register__field input[type='text']:hover,
+.register__field input[type='email']:hover,
+.register__field input[type='url']:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.register__field input[type='text']:focus,
+.register__field input[type='email']:focus,
+.register__field input[type='url']:focus {
+  outline: none;
+  border-color: rgba(74, 174, 212, 0.5);
+  box-shadow: 0 0 0 3px rgba(74, 174, 212, 0.1), 0 0 20px rgba(74, 174, 212, 0.06);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ── Error state ── */
+.register__field input.input--error {
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.register__field input.input--error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12), 0 0 16px rgba(239, 68, 68, 0.06);
+}
+
+/* ── File input ── */
+.register__field input[type='file'] {
+  width: 100%;
+  padding: 0.55rem 0.9rem 0.55rem 2.6rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+  font-family: 'PT Serif', serif;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.register__field input[type='file']::file-selector-button {
+  font-family: 'PT Serif', serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #4AAED4;
+  background: rgba(74, 174, 212, 0.08);
+  border: 1px solid rgba(74, 174, 212, 0.25);
+  border-radius: 50px;
+  padding: 4px 14px;
+  margin-right: 0.75rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.register__field input[type='file']::file-selector-button:hover {
+  background: rgba(74, 174, 212, 0.18);
+  border-color: #4AAED4;
+  color: #7DD8F5;
+}
+
+/* ── Note & error text ── */
+.register__field-note {
+  font-style: italic;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.28);
+  margin-left: 1rem;
+}
+
+.register__field-error {
+  font-size: 0.78rem;
+  color: #ef4444;
+  margin-left: 1rem;
+}
+
+/* ── Error banner ── */
+.register__error-banner {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.65rem 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* ── Submit button ── */
+.register__submit {
+  width: 100%;
+  font-family: 'PT Serif', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  background: linear-gradient(135deg, #1A52A8, #6C5CE7);
+  border: none;
+  border-radius: 50px;
+  padding: 0.8rem 2rem;
+  margin-top: 0.75rem;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 20px rgba(26, 82, 168, 0.25);
+}
+
+.register__submit:hover:not(:disabled) {
+  box-shadow: 0 4px 30px rgba(74, 174, 212, 0.35), 0 0 40px rgba(108, 92, 231, 0.15);
+  transform: translateY(-1px);
+}
+
+.register__submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.register__submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ── Success state ── */
+.register__success {
+  text-align: center;
+  padding: 2.5rem 0;
+}
+
+.register__success h2 {
+  font-family: 'PT Serif', serif;
+  font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  background: linear-gradient(135deg, #7DD8F5, #4AAED4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.85rem;
+}
+
+.register__success p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 1.75rem;
+}
+
+.register__success .register__submit {
+  width: auto;
+  display: inline-block;
+}
+
+/* ── Responsive ── */
+@media (max-width: 540px) {
+  .register {
+    padding: 2rem 1rem;
+  }
+
+  .register__container {
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+  }
+
+  .register__title {
+    margin-bottom: 1.75rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .register__container {
+    padding: 1.75rem 1.15rem;
+  }
 }

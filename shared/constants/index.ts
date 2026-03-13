@@ -1,5 +1,6 @@
 export const COLLECTIONS = {
   USERS: 'users',
+  REGISTRATIONS: 'registrations',
 } as const;
 
 export const AUTH_ERRORS = {

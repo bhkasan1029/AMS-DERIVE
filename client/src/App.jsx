@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import Header from './components/layout/Header';
+import Navbar from './components/layout/Navbar';
 import Landing from './pages/Landing/Landing';
 import Register from './pages/Register/Register';
 import './App.css';
@@ -12,7 +12,7 @@ function App() {
         path="/register"
         element={
           <div className="app">
-            <Header />
+            <Navbar />
             <main className="main-content">
               <Register />
             </main>

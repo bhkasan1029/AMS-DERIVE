@@ -1,28 +1,30 @@
 .landing {
-  min-height: 100vh;
-  background: #0a0a0a;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #1E1E1E;
 }
 
-/* Center hero — pad top so content doesn't sit under fixed navbar */
-.landing__hero {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0 1.5rem 4rem;
-  animation: fadeIn 1s ease-out forwards;
-  opacity: 0;
+/* Particle canvas — fullscreen, captures mouse */
+.landing__particles {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 
-@keyframes fadeIn {
-  to { opacity: 1; }
+/* Heading overlay — above particles, passes clicks through */
+.landing__overlay {
+  position: absolute;
+  top: 18%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  pointer-events: none;
+  z-index: 1;
+  padding: 0 1.5rem;
 }
 
-/* Heading */
 .landing__heading {
   font-family: 'PT Serif', serif;
   font-weight: 700;
@@ -33,80 +35,16 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 3.5rem;
-  text-align: center;
+  animation: fadeIn 1s ease-out forwards;
+  opacity: 0;
 }
 
-/* Timer wrapper — positioning context for glow */
-.landing__timer-wrapper {
-  position: relative;
+@keyframes fadeIn {
+  to { opacity: 1; }
 }
 
-/* Subtle static glow behind numbers */
-.landing__glow {
-  position: absolute;
-  inset: -40% -20%;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(26, 82, 168, 0.08) 0%,
-    transparent 70%
-  );
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-/* Timer row */
-.landing__timer {
-  display: flex;
-  align-items: flex-start;
-  gap: clamp(1rem, 3vw, 2.5rem);
-}
-
-/* Each unit */
-.landing__unit {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-/* Countdown numbers */
-.landing__number {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(3rem, 10vw, 7rem);
-  font-weight: 700;
-  color: #ffffff;
-  line-height: 1;
-  min-width: 2ch;
-  text-align: center;
-}
-
-/* Unit labels */
-.landing__label {
-  font-family: 'PT Serif', serif;
-  font-size: clamp(0.6rem, 1.2vw, 0.8rem);
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: #4AAED4;
-}
-
-/* Colon separator */
-.landing__colon {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(2.2rem, 7vw, 5rem);
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.5);
-  line-height: 1;
-  padding-top: 0.1em;
-}
-
-/* Small screens — keep timer on one row, just smaller */
 @media (max-width: 420px) {
-  .landing__timer {
-    gap: 0.6rem;
-  }
-
-  .landing__colon {
-    padding-top: 0.05em;
+  .landing__overlay {
+    top: 14%;
   }
 }

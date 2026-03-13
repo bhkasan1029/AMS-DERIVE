@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Navbar from '../../components/layout/Navbar';
+import ParticleCountdown from '../../components/ParticleCountdown';
 import './Landing.css';
 
 const now = new Date();
@@ -19,10 +20,6 @@ function getTimeLeft() {
   };
 }
 
-function pad(n) {
-  return String(n).padStart(2, '0');
-}
-
 function Landing() {
   const [time, setTime] = useState(getTimeLeft);
 
@@ -33,36 +30,14 @@ function Landing() {
 
   return (
     <div className="landing">
+      <div className="landing__particles">
+        <ParticleCountdown time={time} />
+      </div>
+
       <Navbar />
 
-      <div className="landing__hero">
+      <div className="landing__overlay">
         <h1 className="landing__heading">Registrations start at 20 April</h1>
-
-        <div className="landing__timer-wrapper">
-          <div className="landing__glow" aria-hidden="true" />
-
-          <div className="landing__timer">
-            <div className="landing__unit">
-              <span className="landing__number">{pad(time.days)}</span>
-              <span className="landing__label">Days</span>
-            </div>
-            <span className="landing__colon">:</span>
-            <div className="landing__unit">
-              <span className="landing__number">{pad(time.hours)}</span>
-              <span className="landing__label">Hours</span>
-            </div>
-            <span className="landing__colon">:</span>
-            <div className="landing__unit">
-              <span className="landing__number">{pad(time.minutes)}</span>
-              <span className="landing__label">Mins</span>
-            </div>
-            <span className="landing__colon">:</span>
-            <div className="landing__unit">
-              <span className="landing__number">{pad(time.seconds)}</span>
-              <span className="landing__label">Secs</span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
