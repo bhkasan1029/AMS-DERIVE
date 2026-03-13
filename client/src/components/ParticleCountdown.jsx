@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
 
-const PARTICLE_COUNT = 2400;
+const PARTICLE_COUNT = 1600;
 const PER_DIGIT = PARTICLE_COUNT / 8;
 const REPEL_RADIUS = 100;
 const REPEL_STRENGTH = 6;
 const SPRING = 0.032;
 const DAMPING = 0.86;
-const BG = '#1E1E1E';
+const BG = '#000000';
 
 let _off = null;
 
@@ -16,12 +16,12 @@ function timeToDigits({ days, hours, minutes, seconds }) {
 }
 
 function computeLayout(W, H) {
-  const fontSize = Math.min(W * 0.09, H * 0.22);
+  const fontSize = Math.min(W * 0.13, H * 0.30);
   const tmp = document.createElement('canvas').getContext('2d');
-  tmp.font = `900 ${fontSize}px Georgia, serif`;
-  const digitW = tmp.measureText('8').width * 1.15;
-  const colonW = fontSize * 0.35;
-  const groupGap = fontSize * 0.2;
+  tmp.font = `900 ${fontSize}px "PT Serif", serif`;
+  const digitW = tmp.measureText('8').width * 1.0;
+  const colonW = fontSize * 0.22;
+  const groupGap = fontSize * 0.1;
   const pairW = digitW * 2;
   const sepW = groupGap + colonW + groupGap;
   const totalW = pairW * 4 + sepW * 3;
@@ -56,28 +56,34 @@ function sampleDigitAt(digit, cx, cy, fontSize, W, H) {
   const c = _off.getContext('2d');
   c.clearRect(0, 0, W, H);
   c.fillStyle = '#fff';
-  c.font = `900 ${fontSize}px Georgia, serif`;
+  c.font = `900 ${fontSize}px "PT Serif", serif`;
   c.textAlign = 'center';
   c.textBaseline = 'middle';
   c.fillText(String(digit), cx, cy);
 
   const data = c.getImageData(0, 0, W, H).data;
-  const pts = [];
   const r = fontSize * 0.75;
   const x0 = Math.max(0, Math.floor(cx - r));
   const x1 = Math.min(W, Math.ceil(cx + r));
   const y0 = Math.max(0, Math.floor(cy - r));
   const y1 = Math.min(H, Math.ceil(cy + r));
-  const step = fontSize < 60 ? 1 : 2;
 
+  // Count lit pixels to calculate uniform grid step
+  let litCount = 0;
+  for (let y = y0; y < y1; y++)
+    for (let x = x0; x < x1; x++)
+      if (data[(y * W + x) * 4 + 3] > 100) litCount++;
+
+  const step = Math.max(1, Math.sqrt(litCount / PER_DIGIT));
+
+  // Sample on a uniform grid
+  const pts = [];
   for (let y = y0; y < y1; y += step)
-    for (let x = x0; x < x1; x += step)
-      if (data[(y * W + x) * 4 + 3] > 100) pts.push({ x, y });
-
-  for (let i = pts.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [pts[i], pts[j]] = [pts[j], pts[i]];
-  }
+    for (let x = x0; x < x1; x += step) {
+      const px = Math.round(x);
+      const py = Math.round(y);
+      if (data[(py * W + px) * 4 + 3] > 100) pts.push({ x: px, y: py });
+    }
 
   const out = [];
   for (let i = 0; i < PER_DIGIT; i++) out.push({ ...pts[i % pts.length] });
@@ -106,8 +112,7 @@ function buildAllParticles(digits, layout, W, H, existing) {
         vy: 0,
         tx: targets[j].x,
         ty: targets[j].y,
-        size: Math.random() * 1.8 + 0.5,
-        alpha: Math.random() * 0.3 + 0.7,
+        size: 1.8,
       });
     }
   }
@@ -139,10 +144,14 @@ function ParticleCountdown({ time }) {
     const s = stRef.current;
 
     function resize() {
+      const dpr = window.devicePixelRatio || 1;
       const W = canvas.parentElement.clientWidth;
       const H = canvas.parentElement.clientHeight;
-      canvas.width = W;
-      canvas.height = H;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       s.W = W;
       s.H = H;
       s.layout = computeLayout(W, H);
@@ -165,6 +174,7 @@ function ParticleCountdown({ time }) {
 
       ctx.fillStyle = BG;
       ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#ffffff';
 
       for (let i = 0; i < ps.length; i++) {
         const p = ps[i];
@@ -188,7 +198,6 @@ function ParticleCountdown({ time }) {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
         ctx.fill();
       }
 
